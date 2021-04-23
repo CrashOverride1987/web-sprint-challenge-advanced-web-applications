@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
+import BubblePage from './components/BubblePage';
 import Login from "./components/Login";
 import "./styles.scss";
 
 function App() {
+  const logout = () => {
+    window.localStorage.removeItem("token");
+  };
   return (
     <Router>
       <div className="App">
@@ -14,6 +18,12 @@ function App() {
         </header> 
 
         <Route exact path="/" component={Login} />
+        <Switch>
+        <PrivateRoute path="/bubble" component={BubblePage} />
+        </Switch>
+        <Link onClick={logout} to="/login">
+              Logout
+        </Link>
       </div>
     </Router>
   );

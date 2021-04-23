@@ -1,14 +1,37 @@
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
 const Login = () => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
+const initialState = {
+  username:'',
+  password:'',
+  error: '',
+}
+  const [state, setState] = useState(initialState);
+
+  const handleChange = (e) => {
+      console.log(e.target.name, e.target.value)
+      setState({
+          ...state,
+          [e.target.name]: e.target.value,
+      });
+    };
+    
+  const login = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:5000/api/colors", state)
+      .then((res) => {
+        window.localStorage.setItem("token", JSON.stringify(res.data.payload));
+        this.props.history.push("/BubblePage");
+      });
+    }
 
   useEffect(()=>{
     // make a post request to retrieve a token from the api
     // when you have handled the token, navigate to the BubblePage route
-  });
-  
+  }, []);
   const error = "";
   //replace with error state
 
@@ -19,6 +42,13 @@ const Login = () => {
         <h2>Build login form here</h2>
       </div>
 
+      <form>
+          <label htmlFor="username">Username</label>
+          <input data-testid='username' name='username' type='text' value={state.username} onChange={handleChange}/>
+          <label htmlFor="password">Password</label>
+          <input data-testid='password' name='password' type ='password' value={state.password} onChange={handleChange}/>
+          <button onClick={login}>submit</button>
+      </form>
       <p data-testid="errorMessage" className="error">{error}</p>
     </div>
   );
