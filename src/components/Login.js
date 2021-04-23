@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { useHistory } from 'react-router';
+
 const Login = () => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
+
 const initialState = {
   username:'',
   password:'',
-  error: '',
 }
+
   const [state, setState] = useState(initialState);
+  const { push } = useHistory();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
       console.log(e.target.name, e.target.value)
@@ -28,11 +33,23 @@ const initialState = {
       });
     }
 
+    const handleSubmit = e => {
+      e.preventDefault();
+      axios
+        .post(`http://localhost:5000/api/login`, state)
+        .then((res) => { 
+          window.localStorage.setItem('token', res.data.payload);
+          push('/bubblepage');
+        })
+        .catch((err) => { setErrorMessage('Username and Password must be valid.')})
+    }
+    
   useEffect(()=>{
     // make a post request to retrieve a token from the api
     // when you have handled the token, navigate to the BubblePage route
   }, []);
-  const error = "";
+
+  const error = errorMessage;
   //replace with error state
 
   return (
@@ -42,11 +59,11 @@ const initialState = {
         <h2>Build login form here</h2>
       </div>
 
-      <form>
+      <form onSubmit={handleSubmit}>
           <label htmlFor="username">Username</label>
-          <input data-testid='username' name='username' type='text' value={state.username} onChange={handleChange}/>
+          <input id='username' data-testid='username' name='username' type='text' value={state.username} onChange={handleChange}/>
           <label htmlFor="password">Password</label>
-          <input data-testid='password' name='password' type ='password' value={state.password} onChange={handleChange}/>
+          <input id='password' data-testid='password' name='password' type ='password' value={state.password} onChange={handleChange}/>
           <button onClick={login}>submit</button>
       </form>
       <p data-testid="errorMessage" className="error">{error}</p>

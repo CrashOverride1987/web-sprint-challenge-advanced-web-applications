@@ -14,16 +14,12 @@ function App() {
       <div className="App">
         <header>
           Color Picker Sprint Challenge
-          <a data-testid="logoutButton" href="#">logout</a>
+          <a data-testid="logoutButton" onClick={logout} href="#">logout</a>
         </header> 
-
-        <Route exact path="/" component={Login} />
         <Switch>
-        <PrivateRoute path="/bubble" component={BubblePage} />
+        <Route exact path="/" component={Login} />
+        <PrivateRoute path="/bubblepage" component={BubblePage} />
         </Switch>
-        <Link onClick={logout} to="/login">
-              Logout
-        </Link>
       </div>
     </Router>
   );
